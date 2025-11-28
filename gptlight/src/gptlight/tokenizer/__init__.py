@@ -16,13 +16,12 @@ class GPTTokenizer():
             
     def encode(self, 
             text:str, 
-            *, 
             allowed_special: AbstractSet[str] | Literal['all'] = {'<|endoftext|>'}, 
             disallowed_special: Collection[str] | Literal['all'] = "all"
         ) -> torch.Tensor:
         """Encodes a string into tokens"""
         
-        encoded = self.encoding.encode(text, allowed_special, disallowed_special)
+        encoded = self.encoding.encode(text=text, allowed_special=allowed_special, disallowed_special=disallowed_special)
         return torch.tensor(encoded).unsqueeze(0)
         
     def decode(self, 
