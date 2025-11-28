@@ -2,7 +2,7 @@
 name = "gptlight"
 version = "0.1.0"
 description = "A Light GPT model"
-authors = ["Data Builder Hub <developer@databuilderhub.com>"]
+authors = ["Yatoute MINTOAMA <developer@databuilderhub.com>"]
 packages = [
     { include = "gptlight", from = "src" }
 ]

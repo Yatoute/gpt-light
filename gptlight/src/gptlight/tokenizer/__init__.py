@@ -1,10 +1,34 @@
+from __future__ import annotations
+
+from typing import Literal, Collection, AbstractSet
+
 import tiktoken
+import torch
 
 from .simple_tokenizer import SimpleTokenizer
 
-def gpt_encoding():
+class GPTTokenizer():
     
-    """
-    GPT 2 encoding using Tiktoken
-    """
-    return tiktoken.get_encoding("gpt2")
+    def __init__(self, encoding_name:str="gpt2"):
+        
+        self.encoding_name = encoding_name
+        self.encoding = tiktoken.get_encoding(encoding_name)
+            
+    def encode(self, 
+            text:str, 
+            *, 
+            allowed_special: AbstractSet[str] | Literal['all'] = {'<|endoftext|>'}, 
+            disallowed_special: Collection[str] | Literal['all'] = "all"
+        ) -> torch.Tensor:
+        
+        encoded = self.encoding.encode(text, allowed_special, disallowed_special)
+        self.encoding.decode()
+        return torch.tensor(encoded).unsqueeze(0)
+        
+    def decode(self, 
+        tokens:torch.Tensor,
+        errors: str = "replace"
+    ) -> str:
+        
+        flat = tokens.squeeze(0)
+        return self.decode(flat.tolist(), errors)
