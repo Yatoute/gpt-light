@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from typing import Optional
 import torch
 import torch.nn as nn 
 
@@ -39,6 +40,44 @@ class GPTModel(nn.Module):
         logits = self.out_head(x)
         
         return logits # (batch_size, seq_len, vocab_size)
+
+    def generate(
+        self, 
+        idx:torch.Tensor, 
+        max_new_tokens:int, 
+        context_size:int, 
+        temperature:Optional[int]=0.0, 
+        top_k:Optional[int]=None, 
+        eos_id:Optional[int]=None
+        ):
+        for _ in range(max_new_tokens):
+            idx_cond = idx[:, -context_size:]
+            with torch.no_grad():
+                logits = self(idx_cond)
+            logits = logits[:, -1, :]
+            
+            if temperature >0.0:
+                if top_k is not None:
+                    top_logits, _ = torch.topk(logits, top_k)
+                    min_val = top_logits[:, -1]
+                    logits = torch.where(
+                        condition=logits<min_val,
+                        input=torch.tensor(-torch.inf).to(logits.device),
+                        other=logits
+                    )
+                logits = logits/temperature
+                probs = torch.softmax(logits, dim=-1)
+                idx_next = torch.multinomial(probs, num_samples=1)
+
+            else:
+                idx_next = torch.argmax(logits, dim=-1, keepdim=True)
+            
+            if idx_next == eos_id:
+                break
+            
+            idx = torch.cat((idx, idx_next), dim=-1)
+            
+        return idx
         
         
         
