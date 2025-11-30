@@ -1,6 +1,7 @@
 .venv
 __pycache__/
 doc
-**/checkpoints/
+gptlight/src/gptlight/notebooks/checkpoints/
 **/checkpoints/*.pt
 
+q
