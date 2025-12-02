@@ -3,7 +3,7 @@ from __future__ import annotations
 import torch
 import torch.nn as nn
 
-from gptlight.models.transformer.activation import GELU
+from .activation import GELU
 from gptlight.config import GPTConfig
 
 class FeedForward(nn.Module):

@@ -3,9 +3,9 @@ from __future__ import annotations
 import torch
 import torch.nn as nn
 
-from gptlight.models.transformer.normalization import LayerNorm
-from gptlight.models.transformer.attention import MultiHeadAttention
-from gptlight.models.transformer.ffn import FeedForward
+from .normalization import LayerNorm
+from .attention import MultiHeadAttention
+from .ffn import FeedForward
 
 from gptlight.config import GPTConfig
 

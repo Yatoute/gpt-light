@@ -1,24 +1,45 @@
 from __future__ import annotations
-import torch
-from torch.utils.data import Dataset
 
-class GPTDataset(Dataset):
-    """ GPT Data Set"""
-    def __init__(self, txt, tokenizer, max_length, stride):
-        
-        self.input_ids = []
-        self.target_ids = []
-        
-        token_ids = tokenizer.encode(txt)
-        
-        for i in range(0, len(token_ids)-max_length, stride):
-            input_chunk = token_ids[i:i+max_length]
-            target_chunk = token_ids[i+1:i+max_length+1]
-            self.input_ids.append(torch.tensor(input_chunk))
-            self.target_ids.append(torch.tensor(target_chunk))
+from typing import Optional
+
+import urllib.request
+import zipfile
+import io
+import logging
+import pandas as pd
+
+def fetch_verdict_text() -> str:
+    """
+        Fetch Verdict Text
+    """
     
-    def __len__(self):
-        return len(self.input_ids)
+    url = ("https://raw.githubusercontent.com/rasbt/"
+        "LLMs-from-scratch/main/ch02/01_main-chapter-code/"
+        "the-verdict.txt")
+
+    with urllib.request.urlopen(url) as response:
+        text = response.read().decode("utf-8")
+
+    return text
+
+
+def fetch_sms_spam_collection() -> Optional[pd.DataFrame] :
+    """ 
+    Fetch sms and spam collection
+    """
     
-    def __getitem__(self, idx):
-        return self.input_ids[idx], self.target_ids[idx]    
+    url = "https://archive.ics.uci.edu/static/public/228/sms+spam+collection.zip"
+    
+    try:
+        response = urllib.request.urlopen(url)
+        
+        zip_data = response.read()
+        
+        with zipfile.ZipFile(io.BytesIO(zip_data)) as z:
+            with z.open("SMSSpamCollection") as f:
+                df = pd.read_csv(f, sep="\t", header=None, names=["Label", "Text"])
+    except Exception as e:
+        logging.error(f"Error when fetching the sms and spam collection : {e}")
+        return None
+
+    return df

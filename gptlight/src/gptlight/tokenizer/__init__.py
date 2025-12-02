@@ -22,7 +22,7 @@ class GPTTokenizer():
         """Encodes a string into tokens"""
         
         encoded = self.encoding.encode(text=text, allowed_special=allowed_special, disallowed_special=disallowed_special)
-        return torch.tensor(encoded).unsqueeze(0)
+        return torch.tensor(encoded)
         
     def decode(self, 
         tokens:torch.Tensor,

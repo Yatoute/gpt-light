@@ -5,8 +5,8 @@ import torch
 import torch.nn as nn 
 
 from gptlight.config import GPTConfig
-from gptlight.models.transformer.normalization import LayerNorm
-from gptlight.models.transformer import GPTTransformerBlock
+from .transformer.normalization import LayerNorm
+from .transformer import GPTTransformerBlock
 
 __all__ = [
     "GPTConfig"
