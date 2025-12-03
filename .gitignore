@@ -1,6 +1,6 @@
 .venv
 __pycache__/
-docgit
+doc/*
 
 gptlight/assets/gpt2
 gptlight/assets/checkpoints/*
